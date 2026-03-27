@@ -125,7 +125,7 @@ async function chamarIA(mensagem) {
 
     let dados = await resposta.json();
 
-    return dados.choices?.[0]?.message?.content || "Erro na IA";
+    return dados.resposta || dados.message || "Erro na IA";
 
   } catch (e) {
     return "Erro de conexão com a IA";
