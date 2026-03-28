@@ -2,137 +2,43 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IA Privada do Raphael</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0f172a;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-header {
-  background: #020617;
-  padding: 15px;
-  text-align: center;
-  font-weight: bold;
-}
-
-#chat {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-}
-
-.mensagem {
-  margin: 10px;
-  padding: 10px;
-  border-radius: 10px;
-  max-width: 80%;
-}
-
-.user {
-  background: #2563eb;
-  margin-left: auto;
-}
-
-.bot {
-  background: #1e293b;
-}
-
-#inputArea {
-  display: flex;
-  padding: 10px;
-  background: #020617;
-}
-
-input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-}
-
-button {
-  margin-left: 10px;
-  padding: 10px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-</style>
+<title>Chat</title>
 </head>
 
 <body>
 
-<script>
-let senha = prompt("Digite a senha:");
+<h2>Chat simples</h2>
 
-if (senha !== "1234") {
-  document.body.innerHTML = "<h1 style='color:red;text-align:center;'>Acesso negado</h1>";
-}
-</script>
-
-<header>IA Privada</header>
+<input id="pergunta" placeholder="Digite...">
+<button onclick="enviar()">Enviar</button>
 
 <div id="chat"></div>
 
-<div id="inputArea">
-  <input id="pergunta" placeholder="Digite algo...">
-  <button onclick="enviar()">Enviar</button>
-</div>
-
 <script>
 async function enviar() {
-  let input = document.getElementById("pergunta");
-  let texto = input.value;
+  let texto = document.getElementById("pergunta").value;
 
   if (!texto) return;
 
-  adicionarMensagem(texto, "user");
-  input.value = "";
-
-  let resposta = await chamarIA(texto);
-  adicionarMensagem(resposta, "bot");
-}
-
-function adicionarMensagem(texto, tipo) {
-  let chat = document.getElementById("chat");
-
-  let div = document.createElement("div");
-  div.className = "mensagem " + tipo;
-  div.innerText = texto;
-
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-async function chamarIA(mensagem) {
   try {
     let resposta = await fetch("https://a817a348-3c3c-42b3-8f0c-112fe806e5f9-00-37gnswhqza25z.riker.replit.dev/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ mensagem })
+      body: JSON.stringify({ mensagem: texto })
     });
 
     let dados = await resposta.json();
 
-    return dados.resposta || dados.message || "Erro na IA";
+    document.getElementById("chat").innerHTML += "<p><b>Você:</b> " + texto + "</p>";
+    document.getElementById("chat").innerHTML += "<p><b>Bot:</b> " + dados.resposta + "</p>";
 
   } catch (e) {
-    return "Erro de conexão com a IA";
+    document.getElementById("chat").innerHTML += "<p>ERRO DE CONEXÃO</p>";
   }
 }
 </script>
 
 </body>
 </html>
-
